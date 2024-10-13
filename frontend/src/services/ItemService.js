@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5127/api';
+const API_URL = 'http://localhost:5127/api/items';
 
+// Get all items
 export const getItems = async () => {
   try {
     const response = await axios.get(API_URL);
@@ -12,7 +13,24 @@ export const getItems = async () => {
   }
 };
 
+// Create a new item
 export const createItem = async (item) => {
-  const response = await axios.post(`${API_URL}/items`, item);
-  return response.data;
+  try {
+    const response = await axios.post(API_URL, item);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create item:', error);
+    throw error;
+  }
+};
+
+// Update an item
+export const updateItem = async (item) => {
+  try {
+    const response = await axios.put(`${API_URL}/${item.id}`, item);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update item:', error);
+    throw error;
+  }
 };

@@ -11,13 +11,12 @@ public class ItemRepository : IItemRepository
 
     public async Task<List<Item>> GetItemsAsync()
     {
-        return await _context.Items.ToListAsync();
+        return await _context.Items.Include(i => i.Category).Include(i => i.Vendor).ToListAsync();
     }
 
     public async Task<Item?> GetItemByIdAsync(int id)
     {
-        var item = await _context.Items.FindAsync(id);
-        return item ?? throw new NullReferenceException("Item not found");
+        return await _context.Items.FindAsync(id);
     }
 
     public async Task AddItemAsync(Item item)

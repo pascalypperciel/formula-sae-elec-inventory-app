@@ -1,5 +1,5 @@
 using AutoMapper;
-using backend.Models;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -19,18 +19,29 @@ public class ItemsController : ControllerBase
         _context = context;
     }
 
+    // GET
+    [HttpGet]
+    public async Task<IActionResult> GetItems()
+    {
+        var items = await _context.Items.ToListAsync();
+        Console.WriteLine($"Retrieved {items.Count} items from the database.");
+        return Ok(items);
+    }
+
+    // POST
     [HttpPost("upload")]
     public async Task<IActionResult> UploadItems([FromForm] IFormFile file)
     {
         if (file == null || file.Length == 0)
             return BadRequest("Please upload a valid CSV file.");
 
-        var items = new List<Item>();
-
-        using (var reader = new StreamReader(file.OpenReadStream()))
+        try
         {
+            using var reader = new StreamReader(file.OpenReadStream());
             string? line;
             bool isHeader = true;
+            var newItems = new List<Item>();
+            var identifiers = new HashSet<string>(); // Track identifiers to detect duplicates
 
             while ((line = await reader.ReadLineAsync()) != null)
             {
@@ -41,76 +52,82 @@ public class ItemsController : ControllerBase
                 }
 
                 var values = line.Split(',');
+                var identifier = values.ElementAtOrDefault(0)?.Trim();
 
-                try
+                if (string.IsNullOrWhiteSpace(identifier) || identifiers.Contains(identifier))
+                    continue; // Skip invalid or duplicate entries
+
+                identifiers.Add(identifier);
+
+                var newItem = new Item
                 {
-                    // Find or create Category
-                    var categoryName = values.ElementAtOrDefault(1)?.Trim() ?? "Other";
-                    var category = await _context.Categories.FirstOrDefaultAsync(c => c.Name == categoryName)
-                                    ?? new Category { Name = categoryName };
+                    Identifier = identifier,
+                    Category = values.ElementAtOrDefault(1)?.Trim() ?? "Other",
+                    Vendor = values.ElementAtOrDefault(4)?.Trim() ?? "Unknown",
+                    LastOrderDate = ParseDate(values.ElementAtOrDefault(2)) ?? DateTime.MinValue,
+                    Name = values.ElementAtOrDefault(3) ?? "Unnamed Item",
+                    Link = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(5)) ? null : values[5],
+                    Location = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(6)) ? null : values[6],
+                    Description = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(7)) ? null : values[7],
+                    CostPerItem = ParseDouble(values.ElementAtOrDefault(8)),
+                    Quantity = ParseInt(values.ElementAtOrDefault(9)),
+                    TotalValue = ParseDouble(values.ElementAtOrDefault(10)),
+                    ReorderLevel = ParseInt(values.ElementAtOrDefault(11)),
+                    ReorderQuantity = ParseInt(values.ElementAtOrDefault(12)),
+                    Discontinued = ParseBool(values.ElementAtOrDefault(13))
+                };
 
-                    // Find or create Vendor
-                    var vendorName = values.ElementAtOrDefault(4)?.Trim() ?? "Unknown";
-                    var vendor = await _context.Vendors.FirstOrDefaultAsync(v => v.Name == vendorName)
-                                  ?? new Vendor { Name = vendorName };
-
-                    // Create Item from parsed values
-                    var item = new Item
-                    {
-                        Id = int.Parse(values[0]), // ITEM NO
-                        Category = category,
-                        Vendor = vendor,
-                        LastOrderDate = ParseDate(values.ElementAtOrDefault(2)) ?? DateTime.MinValue,
-                        Name = values.ElementAtOrDefault(3) ?? "Unnamed Item",
-                        Link = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(5)) ? null : values[5],
-                        Location = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(6)) ? null : values[6],
-                        Description = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(7)) ? null : values[7],
-                        CostPerItem = ParseDouble(values.ElementAtOrDefault(8)),
-                        Quantity = ParseInt(values.ElementAtOrDefault(9)),
-                        TotalValue = ParseDouble(values.ElementAtOrDefault(10)),
-                        ReorderLevel = ParseInt(values.ElementAtOrDefault(11)),
-                        ReorderQuantity = ParseInt(values.ElementAtOrDefault(13)),
-                        Discontinued = ParseBool(values.ElementAtOrDefault(14))
-                    };
-
-                    items.Add(item);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest($"Error parsing CSV at line: {line}. Error: {ex.Message}");
-                }
+                newItems.Add(newItem);
             }
+
+            if (newItems.Any())
+            {
+                await _context.BulkInsertAsync(newItems); // Use BulkExtensions for performance
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok("Items uploaded and saved successfully.");
         }
+        catch (Exception ex)
+        {
+            return BadRequest($"Error saving items: {ex.Message}");
+        }
+    }
 
-        await _context.Items.AddRangeAsync(items);
+    // PUT
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateItem(int id, [FromBody] Item updatedItem)
+    {
+        if (id != updatedItem.Id)
+            return BadRequest("Item ID mismatch.");
+
+        var existingItem = await _context.Items.FindAsync(id);
+        if (existingItem == null)
+            return NotFound("Item not found.");
+
+        // Update the existing item's fields
+        existingItem.Identifier = updatedItem.Identifier;
+        existingItem.Name = updatedItem.Name;
+        existingItem.Category = updatedItem.Category;
+        existingItem.Vendor = updatedItem.Vendor;
+        existingItem.Quantity = updatedItem.Quantity;
+        existingItem.CostPerItem = updatedItem.CostPerItem;
+        existingItem.LastOrderDate = updatedItem.LastOrderDate;
+        existingItem.Link = updatedItem.Link;
+        existingItem.Location = updatedItem.Location;
+        existingItem.Description = updatedItem.Description;
+        existingItem.TotalValue = updatedItem.TotalValue;
+        existingItem.ReorderLevel = updatedItem.ReorderLevel;
+        existingItem.ReorderQuantity = updatedItem.ReorderQuantity;
+        existingItem.Discontinued = updatedItem.Discontinued;
+
         await _context.SaveChangesAsync();
-
-        return Ok("Items uploaded and saved successfully.");
+        return Ok("Item updated successfully.");
     }
 
-    private int ParseInt(string? input)
-    {
-        return int.TryParse(input, out var result) ? result : 0;
-    }
-
-    private double ParseDouble(string? input)
-    {
-        return double.TryParse(input, out var result) ? result : 0.0;
-    }
-
-    private DateTime? ParseDate(string? input)
-    {
-        return DateTime.TryParse(input, out var result) ? result : (DateTime?)null;
-    }
-
-    private bool ParseBool(string? input)
-    {
-        return input?.Trim().ToLower() == "yes";
-    }
-
-    private T? ParseEnum<T>(string? input) where T : struct
-    {
-        return Enum.TryParse<T>(input, true, out var result) ? result : (T?)null;
-    }
-
+    // Helper Methods
+    private int ParseInt(string? input) => int.TryParse(input, out var result) ? result : 0;
+    private double ParseDouble(string? input) => double.TryParse(input, out var result) ? result : 0.0;
+    private DateTime? ParseDate(string? input) => DateTime.TryParse(input, out var result) ? result : (DateTime?)null;
+    private bool ParseBool(string? input) => input?.Trim().ToLower() == "yes";
 }

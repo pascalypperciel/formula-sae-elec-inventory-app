@@ -5,6 +5,7 @@ import theme from './theme';
 import ItemsList from './components/ItemsList';
 import BottomNav from './components/BottomNav';
 import CreateItemForm from './components/CreateItemForm';
+import UploadItems from './components/UploadItems';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<ItemsList />} />
               <Route path="/create-item" element={<CreateItemForm />} />
+              <Route path="/upload" element={<UploadItems />} />
             </Routes>
           </Box>
           <BottomNav />

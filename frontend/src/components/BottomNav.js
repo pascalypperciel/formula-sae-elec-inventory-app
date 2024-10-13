@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import { AppBar, IconButton, Toolbar, Fab, Dialog, DialogTitle, DialogContent, Button, Box } from '@mui/material';
-import { TbPlusMinus } from "react-icons/tb";
-import { FiHome, FiSettings, FiSearch, FiUser } from 'react-icons/fi';
+import { FaCamera, FaFileCsv, FaList } from "react-icons/fa";
+import { FiSettings, FiUser } from 'react-icons/fi';
 import { MdOutlineQrCodeScanner } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 const BottomNav = () => {
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openFabDialog, setOpenFabDialog] = useState(false);
+  const [openCsvDialog, setOpenCsvDialog] = useState(false);
+  const navigate = useNavigate();
 
-  const handleFabClick = () => {
-    setOpenDialog(true);
+  const handleFabClick = () => setOpenFabDialog(true);
+  const handleFabDialogClose = () => setOpenFabDialog(false);
+
+  const handleCsvClick = () => setOpenCsvDialog(true);
+  const handleCsvDialogClose = () => setOpenCsvDialog(false);
+
+  const handleImportCsv = () => {
+    handleCsvDialogClose();
+    navigate("/upload");
   };
 
-  const handleDialogClose = () => {
-    setOpenDialog(false);
+  const handleNavigateToItemsList = () => {
+    navigate('/');
   };
 
   return (
@@ -35,12 +45,12 @@ const BottomNav = () => {
             height: '100%',
           }}
         >
-          <IconButton color="default">
-            <FiHome size={28} />
+          <IconButton color="default" onClick={handleNavigateToItemsList}>
+            <FaList size={28} />
           </IconButton>
 
-          <IconButton color="default">
-            <FiSearch size={28} />
+          <IconButton color="default" onClick={handleCsvClick}>
+            <FaFileCsv size={28} />
           </IconButton>
 
           <Fab
@@ -49,7 +59,7 @@ const BottomNav = () => {
             onClick={handleFabClick}
             sx={{ boxShadow: 'none' }}
           >
-            <TbPlusMinus size={28} />
+            <FaCamera size={25} />
           </Fab>
 
           <IconButton color="default">
@@ -62,7 +72,7 @@ const BottomNav = () => {
         </Toolbar>
       </AppBar>
 
-      <Dialog open={openDialog} onClose={handleDialogClose} fullWidth>
+      <Dialog open={openFabDialog} onClose={handleFabDialogClose} fullWidth>
         <DialogTitle sx={{ textAlign: 'center' }}>Quick Inventory Change</DialogTitle>
         <DialogContent>
           <Box
@@ -109,6 +119,47 @@ const BottomNav = () => {
               onClick={() => alert("Manual Selected")}
             >
               Enter Manually
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openCsvDialog} onClose={handleCsvDialogClose} fullWidth>
+        <DialogTitle sx={{ textAlign: 'center' }}>CSV Actions</DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                height: 120,
+                fontSize: '1.2rem',
+              }}
+              onClick={handleImportCsv}
+            >
+              Import CSV
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              sx={{
+                height: 120,
+                fontSize: '1.2rem',
+              }}
+              onClick={() => alert("Export CSV Selected")}
+            >
+              Export CSV
             </Button>
           </Box>
         </DialogContent>
