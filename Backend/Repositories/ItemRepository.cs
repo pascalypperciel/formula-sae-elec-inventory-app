@@ -14,19 +14,21 @@ public class ItemRepository : IItemRepository
         return await _context.Items.ToListAsync();
     }
 
-    public async Task<Item> GetItemByIdAsync(int id)
+    public async Task<Item?> GetItemByIdAsync(int id)
     {
         var item = await _context.Items.FindAsync(id);
-        if (item == null)
-        {
-            throw new NullReferenceException("Item not found");
-        }
-        return item;
+        return item ?? throw new NullReferenceException("Item not found");
     }
 
     public async Task AddItemAsync(Item item)
     {
         await _context.Items.AddAsync(item);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AddItemsAsync(IEnumerable<Item> items)
+    {
+        await _context.Items.AddRangeAsync(items);
         await _context.SaveChangesAsync();
     }
 

@@ -1,16 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import InventoryPage from './pages/InventoryPage';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme';
+import CreateItemForm from './components/CreateItemForm';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/inventory" element={<InventoryPage />} />
-      </Routes>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate to="/create-item" replace />} />
+          <Route path="/create-item" element={<CreateItemForm />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

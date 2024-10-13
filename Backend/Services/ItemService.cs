@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 public class ItemService : IItemService
 {
@@ -21,6 +22,11 @@ public class ItemService : IItemService
     {
         var item = _mapper.Map<Item>(itemDto);
         await _itemRepository.AddItemAsync(item);
+    }
+
+    public async Task AddItemsAsync(IEnumerable<Item> items)
+    {
+        await _itemRepository.AddItemsAsync(items);
     }
 
     public async Task UpdateItemAsync(int id, ItemDto itemDto)
