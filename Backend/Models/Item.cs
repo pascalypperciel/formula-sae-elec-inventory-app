@@ -11,7 +11,6 @@ public class Item
     public string? Description { get; set; }
     public double CostPerItem { get; set; }
     public int Quantity { get; set; }
-    public double TotalValue { get; set; }
     public int ReorderLevel { get; set; }
     public int ReorderQuantity { get; set; }
     public bool Discontinued { get; set; }

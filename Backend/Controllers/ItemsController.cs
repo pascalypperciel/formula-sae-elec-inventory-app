@@ -2,6 +2,7 @@ using AutoMapper;
 using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using System.Threading.Tasks;
 
 [Route("api/[controller]")]
@@ -26,6 +27,37 @@ public class ItemsController : ControllerBase
         var items = await _context.Items.ToListAsync();
         Console.WriteLine($"Retrieved {items.Count} items from the database.");
         return Ok(items);
+    }
+
+    [HttpGet("export")]
+    public async Task<IActionResult> ExportItems()
+    {
+        var items = await _context.Items.ToListAsync();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("Id,Identifier,Category,Vendor,Name,Quantity,CostPerItem,ReorderLevel,ReorderQuantity,Discontinued,LastOrderDate,Link,Location,Description,CreatedAt");
+
+        foreach (var item in items)
+        {
+            string identifier = item.Identifier;
+            string name = item.Name ?? "";
+            string category = item.Category;
+            string vendor = item.Vendor;
+            string description = item.Description ?? "";
+            string location = item.Location ?? "";
+            string link = item.Link ?? "";
+
+            csv.AppendLine(
+                $"{item.Id},{EscapeCsvField(identifier)},{EscapeCsvField(category)},{EscapeCsvField(vendor)}," +
+                $"{EscapeCsvField(name)},{item.Quantity},{item.CostPerItem}," +
+                $"{item.ReorderLevel},{item.ReorderQuantity},{item.Discontinued}," +
+                $"{item.LastOrderDate:yyyy-MM-dd},{EscapeCsvField(link)},{EscapeCsvField(location)}," +
+                $"{EscapeCsvField(description)},{item.CreatedAt:yyyy-MM-dd HH:mm:ss}"
+            );
+        }
+
+        var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv.ToString())).ToArray();
+        return File(bytes, "text/csv", "items.csv");
     }
 
     // POST
@@ -71,7 +103,6 @@ public class ItemsController : ControllerBase
                     Description = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(7)) ? null : values[7],
                     CostPerItem = ParseDouble(values.ElementAtOrDefault(8)),
                     Quantity = ParseInt(values.ElementAtOrDefault(9)),
-                    TotalValue = ParseDouble(values.ElementAtOrDefault(10)),
                     ReorderLevel = ParseInt(values.ElementAtOrDefault(11)),
                     ReorderQuantity = ParseInt(values.ElementAtOrDefault(12)),
                     Discontinued = ParseBool(values.ElementAtOrDefault(13))
@@ -116,7 +147,6 @@ public class ItemsController : ControllerBase
         existingItem.Link = updatedItem.Link;
         existingItem.Location = updatedItem.Location;
         existingItem.Description = updatedItem.Description;
-        existingItem.TotalValue = updatedItem.TotalValue;
         existingItem.ReorderLevel = updatedItem.ReorderLevel;
         existingItem.ReorderQuantity = updatedItem.ReorderQuantity;
         existingItem.Discontinued = updatedItem.Discontinued;
@@ -130,4 +160,13 @@ public class ItemsController : ControllerBase
     private double ParseDouble(string? input) => double.TryParse(input, out var result) ? result : 0.0;
     private DateTime? ParseDate(string? input) => DateTime.TryParse(input, out var result) ? result : (DateTime?)null;
     private bool ParseBool(string? input) => input?.Trim().ToLower() == "yes";
+    private string EscapeCsvField(string field)
+    {
+        if (field.Contains(",") || field.Contains("\""))
+        {
+            field = field.Replace("\"", "\"\"");
+            return $"\"{field}\"";
+        }
+        return field;
+    }
 }

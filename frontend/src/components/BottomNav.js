@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { AppBar, IconButton, Toolbar, Fab, Dialog, DialogTitle, DialogContent, Button, Box } from '@mui/material';
-import { FaCamera, FaFileCsv, FaList } from "react-icons/fa";
+import {
+  AppBar, IconButton, Toolbar, Fab, Dialog, DialogTitle, DialogContent, Button, Box,
+} from '@mui/material';
+import { FaCamera, FaFileCsv, FaList } from 'react-icons/fa';
 import { FiSettings, FiUser } from 'react-icons/fi';
-import { MdOutlineQrCodeScanner } from "react-icons/md";
+import { MdOutlineQrCodeScanner } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { exportItems } from '../services/ItemService';
 
 const BottomNav = () => {
   const [openFabDialog, setOpenFabDialog] = useState(false);
@@ -18,7 +21,12 @@ const BottomNav = () => {
 
   const handleImportCsv = () => {
     handleCsvDialogClose();
-    navigate("/upload");
+    navigate('/upload');
+  };
+
+  const handleExportCsv = async () => {
+    await exportItems();
+    handleCsvDialogClose();
   };
 
   const handleNavigateToItemsList = () => {
@@ -92,18 +100,15 @@ const BottomNav = () => {
               sx={{
                 height: 120,
                 fontSize: '1.2rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
               }}
-              onClick={() => alert("Scan Selected")}
+              onClick={() => alert('Scan Selected')}
             >
               <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  color: 'inherit', 
+                  color: 'inherit',
                 }}
               >
                 <span>Scan</span>
@@ -116,7 +121,7 @@ const BottomNav = () => {
               variant="outlined"
               color="primary"
               fullWidth
-              onClick={() => alert("Manual Selected")}
+              onClick={() => alert('Manual Selected')}
             >
               Enter Manually
             </Button>
@@ -141,10 +146,7 @@ const BottomNav = () => {
               variant="contained"
               color="primary"
               fullWidth
-              sx={{
-                height: 120,
-                fontSize: '1.2rem',
-              }}
+              sx={{ height: 120, fontSize: '1.2rem' }}
               onClick={handleImportCsv}
             >
               Import CSV
@@ -153,11 +155,8 @@ const BottomNav = () => {
               variant="outlined"
               color="primary"
               fullWidth
-              sx={{
-                height: 120,
-                fontSize: '1.2rem',
-              }}
-              onClick={() => alert("Export CSV Selected")}
+              sx={{ height: 120, fontSize: '1.2rem' }}
+              onClick={handleExportCsv}
             >
               Export CSV
             </Button>

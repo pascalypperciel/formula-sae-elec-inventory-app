@@ -34,3 +34,22 @@ export const updateItem = async (item) => {
     throw error;
   }
 };
+
+// Export items through CSV file
+export const exportItems = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/export`, {
+      responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'items.csv');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error('Failed to export items:', error);
+  }
+};
