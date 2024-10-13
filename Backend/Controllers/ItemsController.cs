@@ -136,7 +136,6 @@ public class ItemsController : ControllerBase
         if (existingItem == null)
             return NotFound("Item not found.");
 
-        // Update the existing item's fields
         existingItem.Identifier = updatedItem.Identifier;
         existingItem.Name = updatedItem.Name;
         existingItem.Category = updatedItem.Category;
@@ -150,6 +149,7 @@ public class ItemsController : ControllerBase
         existingItem.ReorderLevel = updatedItem.ReorderLevel;
         existingItem.ReorderQuantity = updatedItem.ReorderQuantity;
         existingItem.Discontinued = updatedItem.Discontinued;
+        existingItem.ImageUrl = updatedItem.ImageUrl;
 
         await _context.SaveChangesAsync();
         return Ok("Item updated successfully.");

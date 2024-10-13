@@ -15,4 +15,5 @@ public class Item
     public int ReorderQuantity { get; set; }
     public bool Discontinued { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string? ImageUrl { get; set; }
 }
