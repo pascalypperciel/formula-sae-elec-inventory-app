@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Alert,
+  TextField,
+} from '@mui/material';
 import { getItems, updateItem } from '../services/ItemService';
 import ItemCard from './ItemCard';
 
 const ItemsList = () => {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     loadItems();
@@ -16,6 +24,7 @@ const ItemsList = () => {
     try {
       const data = await getItems();
       setItems(data);
+      setFilteredItems(data);
     } catch (err) {
       setError('Failed to load items. Please try again.');
     } finally {
@@ -30,9 +39,26 @@ const ItemsList = () => {
         item.id === updatedItem.id ? updatedItem : item
       );
       setItems(updatedItems);
+      filterItems(searchQuery, updatedItems);
     } catch (error) {
       console.error('Failed to update item:', error);
     }
+  };
+
+  const handleSearchChange = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    filterItems(query, items);
+  };
+
+  const filterItems = (query, itemsToFilter) => {
+    const filtered = itemsToFilter.filter(
+      (item) =>
+        item.identifier.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query) ||
+        (item.description || '').toLowerCase().includes(query)
+    );
+    setFilteredItems(filtered);
   };
 
   if (loading) {
@@ -56,12 +82,22 @@ const ItemsList = () => {
       <Typography variant="h4" textAlign="center" gutterBottom>
         Inventory
       </Typography>
-      {items.length === 0 ? (
+
+      <TextField
+        fullWidth
+        label="Search Items"
+        variant="outlined"
+        margin="normal"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+
+      {filteredItems.length === 0 ? (
         <Typography variant="body1" textAlign="center">
           No items found.
         </Typography>
       ) : (
-        items.map((item) => (
+        filteredItems.map((item) => (
           <ItemCard key={item.id} item={item} onSave={handleSave} />
         ))
       )}
