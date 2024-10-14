@@ -4,17 +4,16 @@ import {
 } from '@mui/material';
 import { FaCamera, FaFileCsv, FaList } from 'react-icons/fa';
 import { FiSettings, FiUser } from 'react-icons/fi';
-import { MdOutlineQrCodeScanner } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { exportItems } from '../services/ItemService';
+import ManualEntryDialog from './ManualEntryDialog';
 
 const BottomNav = () => {
-  const [openFabDialog, setOpenFabDialog] = useState(false);
   const [openCsvDialog, setOpenCsvDialog] = useState(false);
+  const [openManualDialog, setOpenManualDialog] = useState(false);
   const navigate = useNavigate();
 
-  const handleFabClick = () => setOpenFabDialog(true);
-  const handleFabDialogClose = () => setOpenFabDialog(false);
+  const handleFabClick = () => setOpenManualDialog(true);
 
   const handleCsvClick = () => setOpenCsvDialog(true);
   const handleCsvDialogClose = () => setOpenCsvDialog(false);
@@ -80,54 +79,7 @@ const BottomNav = () => {
         </Toolbar>
       </AppBar>
 
-      <Dialog open={openFabDialog} onClose={handleFabDialogClose} fullWidth>
-        <DialogTitle sx={{ textAlign: 'center' }}>Quick Inventory Change</DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{
-                height: 120,
-                fontSize: '1.2rem',
-              }}
-              onClick={() => alert('Scan Selected')}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  color: 'inherit',
-                }}
-              >
-                <span>Scan</span>
-                <IconButton color="inherit" sx={{ padding: 0 }}>
-                  <MdOutlineQrCodeScanner size={60} />
-                </IconButton>
-              </Box>
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              fullWidth
-              onClick={() => alert('Manual Selected')}
-            >
-              Enter Manually
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
+      <ManualEntryDialog open={openManualDialog} onClose={() => setOpenManualDialog(false)} />
 
       <Dialog open={openCsvDialog} onClose={handleCsvDialogClose} fullWidth>
         <DialogTitle sx={{ textAlign: 'center' }}>CSV Actions</DialogTitle>

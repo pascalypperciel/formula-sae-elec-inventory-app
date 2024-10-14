@@ -1,4 +1,5 @@
 using AutoMapper;
+using backend.DTOs;
 using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -153,6 +154,25 @@ public class ItemsController : ControllerBase
 
         await _context.SaveChangesAsync();
         return Ok("Item updated successfully.");
+    }
+
+    [HttpPut("update-quantities")]
+    public async Task<IActionResult> UpdateQuantities([FromBody] List<ItemUsageDto> usages)
+    {
+        foreach (var usage in usages)
+        {
+            var item = await _context.Items.FindAsync(usage.Id);
+            if (item == null)
+                return NotFound($"Item with ID {usage.Id} not found.");
+
+            if (item.Quantity < usage.QuantityUsed)
+                return BadRequest($"Not enough quantity for {item.Identifier}.");
+
+            item.Quantity -= usage.QuantityUsed;
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok("Quantities updated successfully.");
     }
 
     // Helper Methods

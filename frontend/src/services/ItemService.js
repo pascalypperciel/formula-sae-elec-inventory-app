@@ -53,3 +53,14 @@ export const exportItems = async () => {
     console.error('Failed to export items:', error);
   }
 };
+
+// Update just the quantity of a component
+export const updateQuantities = async (usages) => {
+  try {
+    const response = await axios.put(`${API_URL}/update-quantities`, usages);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update quantities:', error);
+    throw error;
+  }
+};
