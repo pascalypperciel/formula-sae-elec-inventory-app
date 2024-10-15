@@ -64,3 +64,14 @@ export const updateQuantities = async (usages) => {
     throw error;
   }
 };
+
+// Get item history
+export const getItemHistory = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/history`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch item history:', error);
+    return [];
+  }
+};

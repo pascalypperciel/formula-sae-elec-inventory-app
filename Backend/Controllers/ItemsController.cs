@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.DTOs;
+using backend.Models;
 using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,30 @@ public class ItemsController : ControllerBase
 
         var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv.ToString())).ToArray();
         return File(bytes, "text/csv", "items.csv");
+    }
+
+    [HttpGet("history")]
+    public async Task<IActionResult> GetItemHistory()
+    {
+        var history = await _context.ItemHistories
+            .Join(
+                _context.Items,
+                history => history.ItemId,
+                item => item.Id,
+                (history, item) => new
+                {
+                    history.Id,
+                    ItemId = history.ItemId,
+                    ItemIdentifier = item.Identifier,
+                    AmountChanged = history.AmountChanged,
+                    NewQuantity = history.NewQuantity,
+                    Timestamp = history.Timestamp
+                }
+            )
+            .OrderByDescending(h => h.Timestamp)
+            .ToListAsync();
+
+        return Ok(history);
     }
 
     // POST
@@ -159,15 +184,29 @@ public class ItemsController : ControllerBase
     [HttpPut("update-quantities")]
     public async Task<IActionResult> UpdateQuantities([FromBody] List<ItemUsageDto> usages)
     {
+        var histories = new List<ItemHistory>();
+
         foreach (var usage in usages)
         {
             var item = await _context.Items.FindAsync(usage.Id);
             if (item == null)
                 return NotFound($"Item with ID {usage.Id} not found.");
 
-            item.Quantity += usage.QuantityUsed;
+            int newQuantity = item.Quantity + usage.QuantityUsed;
+
+            var history = new ItemHistory
+            {
+                ItemId = item.Id,
+                AmountChanged = usage.QuantityUsed,
+                NewQuantity = newQuantity,
+                Timestamp = DateTime.UtcNow
+            };
+            histories.Add(history);
+
+            item.Quantity = newQuantity;
         }
 
+        await _context.ItemHistories.AddRangeAsync(histories);
         await _context.SaveChangesAsync();
         return Ok("Quantities updated successfully.");
     }

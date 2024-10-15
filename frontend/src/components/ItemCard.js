@@ -83,6 +83,7 @@ const ItemCard = ({ item, onSave }) => {
                 onChange={(e) => handleFieldChange('vendor', e.target.value)}
               />
               <TextField
+                disabled 
                 label="Quantity"
                 type="number"
                 value={editedItem.quantity}

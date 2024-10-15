@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
+  Button,
   Typography,
   CircularProgress,
   Alert,
@@ -8,6 +9,7 @@ import {
 } from '@mui/material';
 import { getItems, updateItem } from '../services/ItemService';
 import ItemCard from './ItemCard';
+import { useNavigate } from 'react-router-dom';
 
 const ItemsList = () => {
   const [items, setItems] = useState([]);
@@ -15,6 +17,7 @@ const ItemsList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadItems();
@@ -61,6 +64,10 @@ const ItemsList = () => {
     setFilteredItems(filtered);
   };
 
+  const handleViewHistory = () => {
+    navigate('/item-history');
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -79,9 +86,14 @@ const ItemsList = () => {
 
   return (
     <Box p={2}>
-      <Typography variant="h4" textAlign="center" gutterBottom>
-        Inventory
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4" gutterBottom>
+          Inventory
+        </Typography>
+        <Button variant="outlined" onClick={handleViewHistory}>
+          View History
+        </Button>
+      </Box>
 
       <TextField
         fullWidth

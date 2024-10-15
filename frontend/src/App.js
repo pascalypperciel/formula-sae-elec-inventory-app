@@ -5,6 +5,7 @@ import theme from './theme';
 import ItemsList from './components/ItemsList';
 import BottomNav from './components/BottomNav';
 import UploadItems from './components/UploadItems';
+import ItemHistoryList from './components/ItemHistoryList';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<ItemsList />} />
               <Route path="/upload" element={<UploadItems />} />
+              <Route path="/item-history" element={<ItemHistoryList />} />
             </Routes>
           </Box>
           <BottomNav />
