@@ -6,8 +6,11 @@ import {
   CircularProgress,
   Alert,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@mui/material';
-import { getItems, updateItem } from '../services/ItemService';
+import { getItems, updateItem, exportItems } from '../services/ItemService';
 import ItemCard from './ItemCard';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,6 +20,7 @@ const ItemsList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [openCsvDialog, setOpenCsvDialog] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,6 +72,19 @@ const ItemsList = () => {
     navigate('/item-history');
   };
 
+  const handleCsvDialogOpen = () => setOpenCsvDialog(true);
+  const handleCsvDialogClose = () => setOpenCsvDialog(false);
+
+  const handleImportCsv = () => {
+    handleCsvDialogClose();
+    navigate('/upload');
+  };
+
+  const handleExportCsv = async () => {
+    await exportItems();
+    handleCsvDialogClose();
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -90,9 +107,14 @@ const ItemsList = () => {
         <Typography variant="h4" gutterBottom>
           Inventory
         </Typography>
-        <Button variant="outlined" onClick={handleViewHistory}>
-          View History
-        </Button>
+        <Box display="flex" gap={1}>
+          <Button variant="outlined" onClick={handleViewHistory}>
+            View History
+          </Button>
+          <Button variant="outlined" onClick={handleCsvDialogOpen}>
+            Import/Export
+          </Button>
+        </Box>
       </Box>
 
       <TextField
@@ -113,6 +135,41 @@ const ItemsList = () => {
           <ItemCard key={item.id} item={item} onSave={handleSave} />
         ))
       )}
+
+      <Dialog open={openCsvDialog} onClose={handleCsvDialogClose} fullWidth>
+        <DialogTitle sx={{ textAlign: 'center' }}>CSV Actions</DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ height: 120, fontSize: '1.2rem' }}
+              onClick={handleImportCsv}
+            >
+              Import CSV
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              sx={{ height: 120, fontSize: '1.2rem' }}
+              onClick={handleExportCsv}
+            >
+              Export CSV
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

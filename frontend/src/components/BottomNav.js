@@ -1,32 +1,16 @@
-import React, { useState } from 'react';
-import {
-  AppBar, IconButton, Toolbar, Fab, Dialog, DialogTitle, DialogContent, Button, Box,
-} from '@mui/material';
-import { FaCamera, FaFileCsv, FaList } from 'react-icons/fa';
+import React from 'react';
+import { AppBar, IconButton, Toolbar, Fab } from '@mui/material';
+import { FaCamera, FaList } from 'react-icons/fa';
 import { FiSettings, FiUser } from 'react-icons/fi';
+import { SiDigikeyelectronics } from "react-icons/si";
 import { useNavigate } from 'react-router-dom';
-import { exportItems } from '../services/ItemService';
 import ManualEntryDialog from './ManualEntryDialog';
 
 const BottomNav = () => {
-  const [openCsvDialog, setOpenCsvDialog] = useState(false);
-  const [openManualDialog, setOpenManualDialog] = useState(false);
+  const [openManualDialog, setOpenManualDialog] = React.useState(false);
   const navigate = useNavigate();
 
   const handleFabClick = () => setOpenManualDialog(true);
-
-  const handleCsvClick = () => setOpenCsvDialog(true);
-  const handleCsvDialogClose = () => setOpenCsvDialog(false);
-
-  const handleImportCsv = () => {
-    handleCsvDialogClose();
-    navigate('/upload');
-  };
-
-  const handleExportCsv = async () => {
-    await exportItems();
-    handleCsvDialogClose();
-  };
 
   const handleNavigateToItemsList = () => {
     navigate('/');
@@ -56,8 +40,8 @@ const BottomNav = () => {
             <FaList size={28} />
           </IconButton>
 
-          <IconButton color="default" onClick={handleCsvClick}>
-            <FaFileCsv size={28} />
+          <IconButton color="default">
+            <SiDigikeyelectronics size={28} />
           </IconButton>
 
           <Fab
@@ -80,41 +64,6 @@ const BottomNav = () => {
       </AppBar>
 
       <ManualEntryDialog open={openManualDialog} onClose={() => setOpenManualDialog(false)} />
-
-      <Dialog open={openCsvDialog} onClose={handleCsvDialogClose} fullWidth>
-        <DialogTitle sx={{ textAlign: 'center' }}>CSV Actions</DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ height: 120, fontSize: '1.2rem' }}
-              onClick={handleImportCsv}
-            >
-              Import CSV
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              fullWidth
-              sx={{ height: 120, fontSize: '1.2rem' }}
-              onClick={handleExportCsv}
-            >
-              Export CSV
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
