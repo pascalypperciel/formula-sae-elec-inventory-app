@@ -7,6 +7,7 @@ CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>

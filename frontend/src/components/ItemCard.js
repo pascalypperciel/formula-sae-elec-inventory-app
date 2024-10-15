@@ -51,9 +51,7 @@ const ItemCard = ({ item, onSave }) => {
             <Typography variant="body2" color="textSecondary">
               Quantity: {item.quantity}
             </Typography>
-            <Typography variant="body2">
-              {item.description}
-            </Typography>
+            <Typography variant="body2">{item.description}</Typography>
           </Box>
         </Box>
       </CardContent>
@@ -79,11 +77,16 @@ const ItemCard = ({ item, onSave }) => {
               />
               <TextField
                 label="Vendor"
-                value={editedItem.vendor}
-                onChange={(e) => handleFieldChange('vendor', e.target.value)}
+                value={editedItem.vendor?.name || 'Unknown'}
+                onChange={(e) =>
+                  setEditedItem((prev) => ({
+                    ...prev,
+                    vendor: { ...prev.vendor, name: e.target.value },
+                  }))
+                }
               />
               <TextField
-                disabled 
+                disabled
                 label="Quantity"
                 type="number"
                 value={editedItem.quantity}
@@ -151,7 +154,7 @@ const ItemCard = ({ item, onSave }) => {
           ) : (
             <Box display="flex" flexDirection="column" gap={1}>
               <Typography variant="body2">
-                Vendor: {item.vendor}
+                Vendor: {item.vendor?.name || 'Unknown'}
               </Typography>
               <Typography variant="body2">
                 Location: {item.location || 'N/A'}

@@ -26,15 +26,41 @@ public class ItemsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetItems()
     {
-        var items = await _context.Items.ToListAsync();
-        Console.WriteLine($"Retrieved {items.Count} items from the database.");
+        var items = await _context.Items
+            .Include(i => i.Vendor)
+            .Select(i => new ItemDto
+            {
+                Id = i.Id,
+                Identifier = i.Identifier,
+                Category = i.Category,
+                LastOrderDate = i.LastOrderDate ?? DateTime.MinValue,
+                Name = i.Name ?? string.Empty,
+                Link = i.Link,
+                Location = i.Location,
+                Description = i.Description,
+                CostPerItem = i.CostPerItem,
+                Quantity = i.Quantity,
+                ReorderLevel = i.ReorderLevel,
+                ReorderQuantity = i.ReorderQuantity,
+                ImageUrl = i.ImageUrl,
+                Discontinued = i.Discontinued,
+                Vendor = new VendorDTO
+                {
+                    Id = i.Vendor.Id,
+                    Name = i.Vendor.Name
+                }
+            })
+            .ToListAsync();
+
         return Ok(items);
     }
 
     [HttpGet("export")]
     public async Task<IActionResult> ExportItems()
     {
-        var items = await _context.Items.ToListAsync();
+        var items = await _context.Items
+            .Include(i => i.Vendor)
+            .ToListAsync();
 
         var csv = new StringBuilder();
         csv.AppendLine("Id,Identifier,Category,Vendor,Name,Quantity,CostPerItem,ReorderLevel,ReorderQuantity,Discontinued,LastOrderDate,Link,Location,Description,CreatedAt");
@@ -44,7 +70,7 @@ public class ItemsController : ControllerBase
             string identifier = item.Identifier;
             string name = item.Name ?? "";
             string category = item.Category;
-            string vendor = item.Vendor;
+            string vendor = item.Vendor?.Name ?? "Unknown";
             string description = item.Description ?? "";
             string location = item.Location ?? "";
             string link = item.Link ?? "";
@@ -99,7 +125,7 @@ public class ItemsController : ControllerBase
             string? line;
             bool isHeader = true;
             var newItems = new List<Item>();
-            var identifiers = new HashSet<string>(); // Track identifiers to detect duplicates
+            var identifiers = new HashSet<string>();
 
             while ((line = await reader.ReadLineAsync()) != null)
             {
@@ -113,7 +139,7 @@ public class ItemsController : ControllerBase
                 var identifier = values.ElementAtOrDefault(0)?.Trim();
 
                 if (string.IsNullOrWhiteSpace(identifier) || identifiers.Contains(identifier))
-                    continue; // Skip invalid or duplicate entries
+                    continue;
 
                 identifiers.Add(identifier);
 
@@ -121,7 +147,7 @@ public class ItemsController : ControllerBase
                 {
                     Identifier = identifier,
                     Category = values.ElementAtOrDefault(1)?.Trim() ?? "Other",
-                    Vendor = values.ElementAtOrDefault(4)?.Trim() ?? "Unknown",
+                    Vendor = await GetOrCreateVendor(values.ElementAtOrDefault(4)?.Trim() ?? "Unknown"),
                     LastOrderDate = ParseDate(values.ElementAtOrDefault(2)) ?? DateTime.MinValue,
                     Name = values.ElementAtOrDefault(3) ?? "Unnamed Item",
                     Link = string.IsNullOrWhiteSpace(values.ElementAtOrDefault(5)) ? null : values[5],
@@ -139,7 +165,7 @@ public class ItemsController : ControllerBase
 
             if (newItems.Any())
             {
-                await _context.BulkInsertAsync(newItems); // Use BulkExtensions for performance
+                await _context.BulkInsertAsync(newItems);
             }
 
             await _context.SaveChangesAsync();
@@ -197,6 +223,7 @@ public class ItemsController : ControllerBase
             var history = new ItemHistory
             {
                 ItemId = item.Id,
+                Item = item,
                 AmountChanged = usage.QuantityUsed,
                 NewQuantity = newQuantity,
                 Timestamp = DateTime.UtcNow
@@ -225,4 +252,19 @@ public class ItemsController : ControllerBase
         }
         return field;
     }
+    private async Task<Vendor> GetOrCreateVendor(string vendorName)
+    {
+        var vendor = await _context.Vendors
+            .FirstOrDefaultAsync(v => v.Name == vendorName);
+
+        if (vendor == null)
+        {
+            vendor = new Vendor { Name = vendorName };
+            _context.Vendors.Add(vendor);
+            await _context.SaveChangesAsync();
+        }
+
+        return vendor;
+    }
+
 }
