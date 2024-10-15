@@ -6,6 +6,8 @@ import ItemsList from './components/ItemsList';
 import BottomNav from './components/BottomNav';
 import UploadItems from './components/UploadItems';
 import ItemHistoryList from './components/ItemHistoryList';
+import DigiKeyPage from './components/DigiKeyPage';
+import ComponentsPage from './components/ComponentsPage';
 
 function App() {
   return (
@@ -18,6 +20,13 @@ function App() {
               <Route path="/" element={<ItemsList />} />
               <Route path="/upload" element={<UploadItems />} />
               <Route path="/item-history" element={<ItemHistoryList />} />
+              <Route path="/components" element={<ComponentsPage />} />
+              <Route path="/digikey" element={<DigiKeyPage />} />
+              <Route path="/digikey/search" element={<div>Search for Products</div>} />
+              <Route path="/digikey/quote" element={<div>Request a Quote</div>} />
+              <Route path="/digikey/order" element={<div>Place an Order</div>} />
+              <Route path="/digikey/orders" element={<div>Previously Placed Orders</div>} />
+              <Route path="/digikey/identify" element={<div>Identify Product or Order</div>} />
             </Routes>
           </Box>
           <BottomNav />

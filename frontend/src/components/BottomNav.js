@@ -1,7 +1,8 @@
 import React from 'react';
 import { AppBar, IconButton, Toolbar, Fab } from '@mui/material';
+import { CgComponents } from "react-icons/cg";
 import { FaCamera, FaList } from 'react-icons/fa';
-import { FiSettings, FiUser } from 'react-icons/fi';
+import { FiSettings } from 'react-icons/fi';
 import { SiDigikeyelectronics } from "react-icons/si";
 import { useNavigate } from 'react-router-dom';
 import ManualEntryDialog from './ManualEntryDialog';
@@ -14,6 +15,14 @@ const BottomNav = () => {
 
   const handleNavigateToItemsList = () => {
     navigate('/');
+  };
+
+  const handleNavigateToDigiKeyPage = () => {
+    navigate('/digikey');
+  };
+
+  const handleNavigateToComponentsPage = () => {
+    navigate('/components');
   };
 
   return (
@@ -40,7 +49,7 @@ const BottomNav = () => {
             <FaList size={28} />
           </IconButton>
 
-          <IconButton color="default">
+          <IconButton color="default" onClick={handleNavigateToDigiKeyPage}>
             <SiDigikeyelectronics size={28} />
           </IconButton>
 
@@ -53,8 +62,8 @@ const BottomNav = () => {
             <FaCamera size={25} />
           </Fab>
 
-          <IconButton color="default">
-            <FiUser size={28} />
+          <IconButton color="default" onClick={handleNavigateToComponentsPage}>
+            <CgComponents size={28} />
           </IconButton>
 
           <IconButton color="default">

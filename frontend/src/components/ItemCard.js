@@ -52,7 +52,7 @@ const ItemCard = ({ item, onSave }) => {
               Quantity: {item.quantity}
             </Typography>
             <Typography variant="body2">
-              Quantity: {item.description}
+              {item.description}
             </Typography>
           </Box>
         </Box>

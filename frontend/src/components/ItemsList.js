@@ -108,10 +108,26 @@ const ItemsList = () => {
           Inventory
         </Typography>
         <Box display="flex" gap={1}>
-          <Button variant="outlined" onClick={handleViewHistory}>
+          <Button
+            variant="outlined"
+            onClick={handleViewHistory}
+            sx={{
+              padding: '5px 10px',
+              fontSize: '0.8rem',
+              minWidth: '100px',
+            }}
+          >
             View History
           </Button>
-          <Button variant="outlined" onClick={handleCsvDialogOpen}>
+          <Button
+            variant="outlined"
+            onClick={handleCsvDialogOpen}
+            sx={{
+              padding: '5px 10px',
+              fontSize: '0.8rem',
+              minWidth: '100px',
+            }}
+          >
             Import/Export
           </Button>
         </Box>
