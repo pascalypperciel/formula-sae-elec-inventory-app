@@ -20,6 +20,21 @@ const DigiKeyPage = () => {
           <Button
             fullWidth
             variant="contained"
+            color="secondary"
+            sx={{ 
+              padding: '20px', 
+              fontSize: '1.2rem', 
+              height: '100px' 
+            }}
+            onClick={() => handleFeatureClick('/digikey/cart')}
+          >
+            Shopping Cart
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            fullWidth
+            variant="contained"
             color="success"
             sx={{ 
               padding: '20px', 

@@ -28,7 +28,7 @@ public class ItemsController : ControllerBase
     {
         var items = await _context.Items
             .Include(i => i.Vendor)
-            .Select(i => new ItemDto
+            .Select(i => new ItemDTO
             {
                 Id = i.Id,
                 Identifier = i.Identifier,
@@ -208,7 +208,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPut("update-quantities")]
-    public async Task<IActionResult> UpdateQuantities([FromBody] List<ItemUsageDto> usages)
+    public async Task<IActionResult> UpdateQuantities([FromBody] List<ItemUsageDTO> usages)
     {
         var histories = new List<ItemHistory>();
 

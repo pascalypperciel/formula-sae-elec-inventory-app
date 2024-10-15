@@ -1,8 +1,8 @@
 public interface IItemService
 {
-    Task<List<ItemDto>> GetItemsAsync();
-    Task AddItemAsync(ItemDto itemDto);
+    Task<List<ItemDTO>> GetItemsAsync();
+    Task AddItemAsync(ItemDTO itemDto);
     Task AddItemsAsync(IEnumerable<Item> items);
-    Task UpdateItemAsync(int id, ItemDto itemDto);
+    Task UpdateItemAsync(int id, ItemDTO itemDto);
     Task DeleteItemAsync(int id);
 }

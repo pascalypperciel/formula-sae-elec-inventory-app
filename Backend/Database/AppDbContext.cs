@@ -25,5 +25,17 @@ public class AppDbContext : DbContext
             .WithMany(i => i.History)
             .HasForeignKey(h => h.ItemId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ShoppingCart>()
+            .HasOne(sc => sc.Item)
+            .WithMany()
+            .HasForeignKey(sc => sc.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ShoppingCart>()
+            .HasOne(sc => sc.Vendor)
+            .WithMany()
+            .HasForeignKey(sc => sc.VendorId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

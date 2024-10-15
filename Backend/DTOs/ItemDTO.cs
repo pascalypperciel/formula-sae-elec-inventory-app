@@ -1,7 +1,7 @@
 using backend.DTOs;
 using backend.Models;
 
-public class ItemDto
+public class ItemDTO
 {
     public required int Id { get; set; }
     public required string Identifier { get; set; } //Used to be "Item No" in the Excel sheet

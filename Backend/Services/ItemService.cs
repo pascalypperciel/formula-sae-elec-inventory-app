@@ -12,13 +12,13 @@ public class ItemService : IItemService
         _mapper = mapper;
     }
 
-    public async Task<List<ItemDto>> GetItemsAsync()
+    public async Task<List<ItemDTO>> GetItemsAsync()
     {
         var items = await _itemRepository.GetItemsAsync();
-        return _mapper.Map<List<ItemDto>>(items);
+        return _mapper.Map<List<ItemDTO>>(items);
     }
 
-    public async Task AddItemAsync(ItemDto itemDto)
+    public async Task AddItemAsync(ItemDTO itemDto)
     {
         var item = _mapper.Map<Item>(itemDto);
         await _itemRepository.AddItemAsync(item);
@@ -29,7 +29,7 @@ public class ItemService : IItemService
         await _itemRepository.AddItemsAsync(items);
     }
 
-    public async Task UpdateItemAsync(int id, ItemDto itemDto)
+    public async Task UpdateItemAsync(int id, ItemDTO itemDto)
     {
         var item = await _itemRepository.GetItemByIdAsync(id);
         if (item == null) return;
