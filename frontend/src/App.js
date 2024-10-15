@@ -4,7 +4,6 @@ import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './theme';
 import ItemsList from './components/ItemsList';
 import BottomNav from './components/BottomNav';
-import CreateItemForm from './components/CreateItemForm';
 import UploadItems from './components/UploadItems';
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
           <Box sx={{ flex: 1, overflow: 'auto' }}>
             <Routes>
               <Route path="/" element={<ItemsList />} />
-              <Route path="/create-item" element={<CreateItemForm />} />
               <Route path="/upload" element={<UploadItems />} />
             </Routes>
           </Box>

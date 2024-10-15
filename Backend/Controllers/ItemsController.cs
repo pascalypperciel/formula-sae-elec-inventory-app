@@ -165,10 +165,7 @@ public class ItemsController : ControllerBase
             if (item == null)
                 return NotFound($"Item with ID {usage.Id} not found.");
 
-            if (item.Quantity < usage.QuantityUsed)
-                return BadRequest($"Not enough quantity for {item.Identifier}.");
-
-            item.Quantity -= usage.QuantityUsed;
+            item.Quantity += usage.QuantityUsed;
         }
 
         await _context.SaveChangesAsync();

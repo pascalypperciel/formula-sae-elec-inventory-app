@@ -44,22 +44,24 @@ const ManualEntryDialog = ({ open, onClose }) => {
   };
 
   const handleQuantityChange = (id, value) => {
-    const quantity = Math.max(0, Number(value));
+    const quantity = parseInt(value, 10) || 0;
     setSelectedItems((prev) => ({
       ...prev,
       [id]: { ...prev[id], quantityUsed: quantity },
     }));
   };
+  
 
   const handleIncrement = (id, delta) => {
     setSelectedItems((prev) => {
       const currentQuantity = prev[id].quantityUsed + delta;
       return {
         ...prev,
-        [id]: { ...prev[id], quantityUsed: Math.max(0, currentQuantity) },
+        [id]: { ...prev[id], quantityUsed: currentQuantity },
       };
     });
   };
+  
 
   const handleScanIconClick = () => {
     setScanning(true);
@@ -93,7 +95,7 @@ const ManualEntryDialog = ({ open, onClose }) => {
         id: item.id,
         quantityUsed: item.quantityUsed,
       }));
-
+  
     try {
       await updateQuantities(usages);
       onClose();
@@ -102,7 +104,7 @@ const ManualEntryDialog = ({ open, onClose }) => {
       alert('Failed to update quantities.');
     }
   };
-
+  
   const filteredItems = items.filter(
     (item) =>
       item.identifier.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -190,7 +192,6 @@ const ManualEntryDialog = ({ open, onClose }) => {
                       type="number"
                       value={item.quantityUsed}
                       onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                      inputProps={{ min: 0, style: { textAlign: 'center' } }}
                       sx={{
                         width: 60,
                         mx: 1,
