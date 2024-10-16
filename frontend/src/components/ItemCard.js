@@ -3,19 +3,20 @@ import {
   Card,
   CardContent,
   Typography,
-  IconButton,
+  Button,
   TextField,
   Box,
-  Button,
   Avatar,
   Collapse,
 } from '@mui/material';
-import { Edit, Save, Cancel } from '@mui/icons-material';
+import { Save, Cancel } from '@mui/icons-material';
+import { addToCart } from '../services/ShoppingCartService';
 
 const ItemCard = ({ item, onSave }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState({ ...item });
+  const [quantity, setQuantity] = useState(1);
 
   const handleFieldChange = (field, value) => {
     setEditedItem((prev) => ({ ...prev, [field]: value }));
@@ -24,6 +25,13 @@ const ItemCard = ({ item, onSave }) => {
   const handleSave = () => {
     setIsEditing(false);
     onSave(editedItem);
+  };
+
+  const handleAddToCart = async () => {
+    const vendorId = item.vendor?.id || '';
+    if (vendorId && item.id) {
+      await addToCart(item.id, vendorId, quantity);
+    }
   };
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
@@ -71,6 +79,13 @@ const ItemCard = ({ item, onSave }) => {
                 onChange={(e) => handleFieldChange('category', e.target.value)}
               />
               <TextField
+                disabled
+                label="Quantity"
+                type="number"
+                value={editedItem.quantity}
+                onChange={(e) => handleFieldChange('quantity', e.target.value)}
+              />
+              <TextField
                 label="Description"
                 value={editedItem.description}
                 onChange={(e) => handleFieldChange('description', e.target.value)}
@@ -86,17 +101,16 @@ const ItemCard = ({ item, onSave }) => {
                 }
               />
               <TextField
-                disabled
-                label="Quantity"
-                type="number"
-                value={editedItem.quantity}
-                onChange={(e) => handleFieldChange('quantity', e.target.value)}
+                label="Location"
+                value={editedItem.location}
+                onChange={(e) => handleFieldChange('location', e.target.value)}
               />
               <TextField
-                label="Cost Per Item"
-                type="number"
-                value={editedItem.costPerItem}
-                onChange={(e) => handleFieldChange('costPerItem', e.target.value)}
+                label="Last Order Date"
+                type="date"
+                value={editedItem.lastOrderDate}
+                onChange={(e) => handleFieldChange('lastOrderDate', e.target.value)}
+                InputLabelProps={{ shrink: true }}
               />
               <TextField
                 label="Reorder Level"
@@ -111,21 +125,10 @@ const ItemCard = ({ item, onSave }) => {
                 onChange={(e) => handleFieldChange('reorderQuantity', e.target.value)}
               />
               <TextField
-                label="Location"
-                value={editedItem.location}
-                onChange={(e) => handleFieldChange('location', e.target.value)}
-              />
-              <TextField
-                label="Last Order Date"
-                type="date"
-                value={editedItem.lastOrderDate}
-                onChange={(e) => handleFieldChange('lastOrderDate', e.target.value)}
-                InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                label="Link"
-                value={editedItem.link}
-                onChange={(e) => handleFieldChange('link', e.target.value)}
+                label="Cost Per Item"
+                type="number"
+                value={editedItem.costPerItem}
+                onChange={(e) => handleFieldChange('costPerItem', e.target.value)}
               />
               <TextField
                 label="Discontinued"
@@ -133,6 +136,11 @@ const ItemCard = ({ item, onSave }) => {
                 onChange={(e) =>
                   handleFieldChange('discontinued', e.target.value === 'Yes')
                 }
+              />
+              <TextField
+                label="Link"
+                value={editedItem.link}
+                onChange={(e) => handleFieldChange('link', e.target.value)}
               />
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Button
@@ -169,7 +177,7 @@ const ItemCard = ({ item, onSave }) => {
                 Reorder Quantity: {item.reorderQuantity}
               </Typography>
               <Typography variant="body2">
-                Cost Per Item: ${item.costPerItem.toFixed(2)}
+                Cost Per Item: ${Number(item.costPerItem || 0).toFixed(2)}
               </Typography>
               <Typography variant="body2">
                 Discontinued: {item.discontinued ? 'Yes' : 'No'}
@@ -179,9 +187,38 @@ const ItemCard = ({ item, onSave }) => {
                   {item.link ? 'View Link' : 'No Link Available'}
                 </a>
               </Typography>
-              <IconButton onClick={() => setIsEditing(true)} sx={{ mt: 2 }}>
-                <Edit />
-              </IconButton>
+              <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={24}>
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  variant="outlined"
+                  sx={{
+                    height: '56px',
+                  }}
+                >
+                  Edit
+                </Button>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <TextField
+                    label="Qty"
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    sx={{
+                      width: 80,
+                      backgroundColor: 'white',
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={handleAddToCart}
+                    sx={{
+                      height: '56px',
+                    }}
+                  >
+                    Add to Cart
+                  </Button>
+                </Box>
+              </Box>
             </Box>
           )}
         </CardContent>

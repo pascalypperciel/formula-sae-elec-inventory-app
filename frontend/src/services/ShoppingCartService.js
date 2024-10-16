@@ -45,3 +45,17 @@ export const refreshReorders = async () => {
     throw error;
   }
 };
+
+// Add an item to the cart from ItemCard.js
+export const addToCart = async (itemId, vendorId, quantity) => {
+  try {
+    const response = await axios.post(`${API_URL}/add-to-cart`, {
+      itemId: itemId, 
+      vendorId: vendorId, 
+      quantity: quantity
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+  }
+};

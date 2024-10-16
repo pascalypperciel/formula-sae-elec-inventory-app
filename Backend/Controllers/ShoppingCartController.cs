@@ -130,6 +130,50 @@ namespace backend.Controllers
             }
         }
 
+        [HttpPost("add-to-cart")]
+        public async Task<IActionResult> AddToCart([FromBody] AddToCartDTO dto)
+        {
+            try
+            {
+                var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == dto.ItemId);
+                var vendor = await _context.Vendors.FirstOrDefaultAsync(v => v.Id == dto.VendorId);
+
+                if (item == null)
+                    return NotFound("Item not found.");
+                if (vendor == null)
+                    return NotFound("Vendor not found.");
+
+                var existingCartItem = await _context.ShoppingCarts
+                    .FirstOrDefaultAsync(sc => sc.ItemId == dto.ItemId && sc.VendorId == dto.VendorId);
+
+                if (existingCartItem != null)
+                {
+                    existingCartItem.Quantity += dto.Quantity;
+                }
+                else
+                {
+                    var newCartItem = new ShoppingCart
+                    {
+                        ItemId = dto.ItemId,
+                        VendorId = dto.VendorId,
+                        Quantity = dto.Quantity,
+                        ShoppingCartReasons = ShoppingCartReasons.ManuallyAdded,
+                        Timestamp = DateTime.UtcNow
+                    };
+
+                    _context.ShoppingCarts.Add(newCartItem);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok("Item added to cart successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         // PUT
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCartItem(int id, [FromBody] UpdateCartItemDTO updateRequest)
