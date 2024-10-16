@@ -285,6 +285,22 @@ public class ItemsController : ControllerBase
         return Ok("Quantities updated successfully.");
     }
 
+    // DELETE
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteItem(int id)
+    {
+        var item = await _context.Items.FindAsync(id);
+        if (item == null)
+        {
+            return NotFound();
+        }
+
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     // Helper Methods
     private int ParseInt(string? input) => int.TryParse(input, out var result) ? result : 0;
     private double ParseDouble(string? input) => double.TryParse(input, out var result) ? result : 0.0;

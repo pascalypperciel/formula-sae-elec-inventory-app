@@ -75,3 +75,14 @@ export const getItemHistory = async () => {
     return [];
   }
 };
+
+// Delete an item
+export const deleteItem = async (id) => {
+  try {
+    await axios.delete(`${API_URL}/${id}`);
+  } catch (error) {
+    console.error('Failed to delete item:', error);
+    throw error;
+  }
+};
+

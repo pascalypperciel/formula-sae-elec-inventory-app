@@ -9,8 +9,9 @@ import {
   Avatar,
   Collapse,
 } from '@mui/material';
-import { Save, Cancel } from '@mui/icons-material';
+import { Save, Cancel, Delete, Edit } from '@mui/icons-material';
 import { addToCart } from '../services/ShoppingCartService';
+import { deleteItem } from '../services/ItemService';
 
 const ItemCard = ({ item, onSave }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -31,6 +32,13 @@ const ItemCard = ({ item, onSave }) => {
     const vendorId = item.vendor?.id || '';
     if (vendorId && item.id) {
       await addToCart(item.id, vendorId, quantity);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm(`Are you sure you want to delete the item "${item.identifier}"?`)) {
+      await deleteItem(item.id);
+      window.location.reload();
     }
   };
 
@@ -187,16 +195,29 @@ const ItemCard = ({ item, onSave }) => {
                   {item.link ? 'View Link' : 'No Link Available'}
                 </a>
               </Typography>
-              <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={24}>
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  variant="outlined"
-                  sx={{
-                    height: '56px',
-                  }}
-                >
-                  Edit
-                </Button>
+              <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={20}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Button
+                    onClick={() => setIsEditing(true)}
+                    variant="contained"
+                    startIcon={<Edit />}
+                    sx={{
+                      height: '56px',
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={handleDelete}
+                    variant="outlined"
+                    startIcon={<Delete />}
+                    sx={{
+                      height: '56px',
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Box>
                 <Box display="flex" alignItems="center" gap={1}>
                   <TextField
                     label="Qty"
