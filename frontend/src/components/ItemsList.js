@@ -85,6 +85,10 @@ const ItemsList = () => {
     handleCsvDialogClose();
   };
 
+  const handleCreateItem = () => {
+    navigate('/create-item');
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -103,34 +107,45 @@ const ItemsList = () => {
 
   return (
     <Box p={2} sx={{ height: 'calc(100vh - 80px)', overflowY: 'auto' }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h4" gutterBottom>
-          Inventory
-        </Typography>
-        <Box display="flex" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={handleViewHistory}
-            sx={{
-              padding: '5px 10px',
-              fontSize: '0.8rem',
-              minWidth: '100px',
-            }}
-          >
-            View History
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleCsvDialogOpen}
-            sx={{
-              padding: '5px 10px',
-              fontSize: '0.8rem',
-              minWidth: '100px',
-            }}
-          >
-            Import/Export
-          </Button>
-        </Box>
+      <Typography variant="h4" gutterBottom>
+        Inventory
+      </Typography>
+
+      <Box display="flex" justifyContent="flex-start" gap={1}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreateItem}
+          sx={{
+            padding: '5px 10px',
+            fontSize: '0.8rem',
+            minWidth: '100px',
+          }}
+        >
+          Create an Item
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={handleViewHistory}
+          sx={{
+            padding: '5px 10px',
+            fontSize: '0.8rem',
+            minWidth: '100px',
+          }}
+        >
+          View History
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={handleCsvDialogOpen}
+          sx={{
+            padding: '5px 10px',
+            fontSize: '0.8rem',
+            minWidth: '100px',
+          }}
+        >
+          Import/Export
+        </Button>
       </Box>
 
       <TextField

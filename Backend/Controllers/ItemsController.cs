@@ -113,6 +113,53 @@ public class ItemsController : ControllerBase
     }
 
     // POST
+    [HttpPost]
+    public async Task<IActionResult> CreateItem([FromBody] CreateItemDTO newItemDTO)
+    {
+        try
+        {
+            if (newItemDTO == null)
+            {
+                return BadRequest("Invalid item data.");
+            }
+
+            var vendor = await _context.Vendors
+                .FirstOrDefaultAsync(v => v.Name == newItemDTO.VendorName);
+
+            if (vendor == null)
+            {
+                vendor = new Vendor { Name = newItemDTO.VendorName };
+                _context.Vendors.Add(vendor);
+                await _context.SaveChangesAsync();
+            }
+
+            var newItem = new Item
+            {
+                Identifier = newItemDTO.Identifier,
+                Category = newItemDTO.Category,
+                Quantity = newItemDTO.Quantity,
+                Description = newItemDTO.Description,
+                Location = newItemDTO.Location,
+                LastOrderDate = newItemDTO.LastOrderDate,
+                ReorderLevel = newItemDTO.ReorderLevel,
+                ReorderQuantity = newItemDTO.ReorderQuantity,
+                CostPerItem = newItemDTO.CostPerItem,
+                Discontinued = newItemDTO.Discontinued,
+                Link = newItemDTO.Link,
+                Vendor = vendor
+            };
+
+            _context.Items.Add(newItem);
+            await _context.SaveChangesAsync();
+
+            return Ok("Item created and saved successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
     [HttpPost("upload")]
     public async Task<IActionResult> UploadItems([FromForm] IFormFile file)
     {

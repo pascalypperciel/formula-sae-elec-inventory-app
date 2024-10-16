@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './theme';
+import CreateItem from './components/CreateItem';
 import ItemsList from './components/ItemsList';
 import BottomNav from './components/BottomNav';
 import UploadItems from './components/UploadItems';
@@ -20,6 +21,7 @@ function App() {
             <Routes>
               <Route path="/" element={<ItemsList />} />
               <Route path="/upload" element={<UploadItems />} />
+              <Route path="/create-item" element={<CreateItem />} />
               <Route path="/item-history" element={<ItemHistoryList />} />
               <Route path="/components" element={<ComponentsPage />} />
               <Route path="/digikey" element={<DigiKeyPage />} />
