@@ -106,21 +106,18 @@ namespace backend.Controllers
 
                     if (existingCartItem == null)
                     {
-
-                        var newCartItem = new ShoppingCart
+                        if (item.ReorderQuantity > 0)
                         {
-                            ItemId = item.Id,
-                            Quantity = item.ReorderQuantity,
-                            VendorId = digikeyVendor.Id,
-                            ShoppingCartReasons = ShoppingCartReasons.ReorderQuantity,
-                            Timestamp = DateTime.UtcNow
-                        };
-
-                        _context.ShoppingCarts.Add(newCartItem);
-                    }
-                    else if (existingCartItem.Quantity <= 0)
-                    {
-                        _context.ShoppingCarts.Remove(existingCartItem);
+                            var newCartItem = new ShoppingCart
+                            {
+                                ItemId = item.Id,
+                                Quantity = item.ReorderQuantity,
+                                VendorId = digikeyVendor.Id,
+                                ShoppingCartReasons = ShoppingCartReasons.ReorderQuantity,
+                                Timestamp = DateTime.UtcNow
+                            };
+                            _context.ShoppingCarts.Add(newCartItem);
+                        }
                     }
                 }
 
