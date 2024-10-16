@@ -102,7 +102,7 @@ const ItemsList = () => {
   }
 
   return (
-    <Box p={2}>
+    <Box p={2} sx={{ height: 'calc(100vh - 80px)', overflowY: 'auto' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
           Inventory
