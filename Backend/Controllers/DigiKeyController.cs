@@ -6,31 +6,20 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class DigiKeyController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
+        private readonly DigiKeyService _digiKeyService;
 
-        public DigiKeyController(HttpClient httpClient)
+        public DigiKeyController(DigiKeyService digiKeyService)
         {
-            _httpClient = httpClient;
+            _digiKeyService = digiKeyService;
         }
 
-        // GET
-
-        [HttpGet("products")]
-        public async Task<IActionResult> GetDigiKeyProducts()
+        [HttpGet("pricing/{partNumber}")]
+        public async Task<IActionResult> GetProductPricing(string partNumber)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.example.com/products");
-
-            request.Headers.Add("Authorization", "Bearer YOUR_API_KEY");
-
             try
             {
-                var response = await _httpClient.SendAsync(request);
-
-                if (!response.IsSuccessStatusCode)
-                    return StatusCode((int)response.StatusCode, "Failed to retrieve products.");
-
-                var data = await response.Content.ReadAsStringAsync();
-                return Content(data, "application/json");
+                var pricingData = await _digiKeyService.GetDigiKeyProductPricing(partNumber);
+                return Content(pricingData, "application/json");
             }
             catch (Exception ex)
             {
@@ -38,5 +27,4 @@ namespace backend.Controllers
             }
         }
     }
-
 }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using dotenv.net;
+using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,7 @@ CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<DigiKeyService>();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
@@ -19,6 +22,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IDigiKeyService, DigiKeyService>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -31,6 +35,7 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
 });
 
+DotEnv.Load();
 
 var app = builder.Build();
 
