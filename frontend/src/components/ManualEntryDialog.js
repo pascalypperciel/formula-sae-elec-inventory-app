@@ -114,7 +114,7 @@ const ManualEntryDialog = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>Select Components Used</DialogTitle>
+      <DialogTitle>Quick Inventory Actions</DialogTitle>
       <DialogContent>
       <Box display="flex" alignItems="center" gap={1} mb={2}>
         <TextField
@@ -159,7 +159,6 @@ const ManualEntryDialog = ({ open, onClose }) => {
         )}
 
         <Box mt={2}>
-          <Typography variant="h6">Selected Components</Typography>
           <Box display="flex" flexWrap="wrap" gap={2} mt={1}>
             {Object.values(selectedItems)
               .filter(Boolean)
