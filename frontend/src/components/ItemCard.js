@@ -8,8 +8,9 @@ import {
   Box,
   Avatar,
   Collapse,
+  Grid,
 } from '@mui/material';
-import { Save, Cancel, Delete, Edit } from '@mui/icons-material';
+import { Save, Cancel, Delete, Edit, Link as LinkIcon } from '@mui/icons-material';
 import { addToCart } from '../services/ShoppingCartService';
 import { deleteItem } from '../services/ItemService';
 
@@ -168,33 +169,74 @@ const ItemCard = ({ item, onSave }) => {
               </Box>
             </Box>
           ) : (
-            <Box display="flex" flexDirection="column" gap={1}>
-              <Typography variant="body2">
-                Vendor: {item.vendor?.name || 'Unknown'}
-              </Typography>
-              <Typography variant="body2">
-                Location: {item.location || 'N/A'}
-              </Typography>
-              <Typography variant="body2">
-                Last Order Date: {item.lastOrderDate || 'N/A'}
-              </Typography>
-              <Typography variant="body2">
-                Reorder Level: {item.reorderLevel}
-              </Typography>
-              <Typography variant="body2">
-                Reorder Quantity: {item.reorderQuantity}
-              </Typography>
-              <Typography variant="body2">
-                Cost Per Item: ${Number(item.costPerItem || 0).toFixed(2)}
-              </Typography>
-              <Typography variant="body2">
-                Discontinued: {item.discontinued ? 'Yes' : 'No'}
-              </Typography>
-              <Typography variant="body2">
-                <a href={item.link} target="_blank" rel="noopener noreferrer">
-                  {item.link ? 'View Link' : 'No Link Available'}
-                </a>
-              </Typography>
+            <Grid>
+              <Grid 
+                container 
+                spacing={2} 
+                justifyContent="center" 
+                alignItems="center"
+              >
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Vendor:
+                  </Typography>
+                  <Typography variant="body2">{item.vendor?.name || 'Unknown'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Location:
+                  </Typography>
+                  <Typography variant="body2">{item.location || 'N/A'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Last Order Date:
+                  </Typography>
+                  <Typography variant="body2">{item.lastOrderDate || 'N/A'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Cost Per Item:
+                  </Typography>
+                  <Typography variant="body2">${Number(item.costPerItem || 0).toFixed(2)}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Reorder Level:
+                  </Typography>
+                  <Typography variant="body2">{item.reorderLevel}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Reorder Quantity:
+                  </Typography>
+                  <Typography variant="body2">{item.reorderQuantity}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Discontinued:
+                  </Typography>
+                  <Typography variant="body2">{item.discontinued ? 'Yes' : 'No'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  {item.link ? (
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      startIcon={<LinkIcon />}
+                    >
+                      Manufacturer's Link
+                    </Button>
+                  ) : (
+                    <Typography variant="body2" color="textSecondary">
+                      No Link Available
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
               <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={20}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <Button
@@ -240,7 +282,7 @@ const ItemCard = ({ item, onSave }) => {
                   </Button>
                 </Box>
               </Box>
-            </Box>
+            </Grid>
           )}
         </CardContent>
       </Collapse>
