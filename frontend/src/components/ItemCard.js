@@ -151,6 +151,11 @@ const ItemCard = ({ item, onSave }) => {
                 value={editedItem.link}
                 onChange={(e) => handleFieldChange('link', e.target.value)}
               />
+              <TextField
+                label="Image URL"
+                value={editedItem.imageUrl}
+                onChange={(e) => handleFieldChange('imageUrl', e.target.value)}
+              />
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Button
                   onClick={handleSave}
@@ -237,7 +242,7 @@ const ItemCard = ({ item, onSave }) => {
                   )}
                 </Grid>
               </Grid>
-              <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={20}>
+              <Box display="flex" justifyContent="center" alignItems="center" mt={4} gap={20}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <Button
                     onClick={() => setIsEditing(true)}
