@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { MdOutlineQrCodeScanner } from 'react-icons/md';
 import { Add, Remove } from '@mui/icons-material';
-import { getItems, updateQuantities } from '../services/ItemService';
+import { getItems, updateQuantities } from '../../services/ItemService';
 import { Html5Qrcode } from 'html5-qrcode';
 
 const ManualEntryDialog = ({ open, onClose }) => {

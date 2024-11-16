@@ -4,6 +4,7 @@
     {
         public int Id { get; set; } // Auto-incrementing primary key
         public required string Name { get; set; }
+        public string? Description { get; set; }
         public List<ComponentItem> ComponentItems { get; set; } = new List<ComponentItem>();
     }
 }

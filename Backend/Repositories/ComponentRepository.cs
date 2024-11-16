@@ -57,6 +57,7 @@ public class ComponentRepository : IComponentRepository
         }
 
         existingComponent.Name = component.Name;
+        existingComponent.Description = component.Description;
 
         _context.ComponentItems.RemoveRange(existingComponent.ComponentItems);
 
@@ -75,7 +76,6 @@ public class ComponentRepository : IComponentRepository
         _context.Components.Update(existingComponent);
         await _context.SaveChangesAsync();
     }
-
 
     public async Task DeleteComponentAsync(int id)
     {

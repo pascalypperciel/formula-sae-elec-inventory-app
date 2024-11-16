@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogContent,
 } from '@mui/material';
-import { getItems, updateItem, exportItems } from '../services/ItemService';
+import { getItems, updateItem, exportItems } from '../../services/ItemService';
 import ItemCard from './ItemCard';
 import { useNavigate } from 'react-router-dom';
 

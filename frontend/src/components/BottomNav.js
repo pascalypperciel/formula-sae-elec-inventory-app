@@ -5,7 +5,7 @@ import { FaCamera, FaList } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import { SiDigikeyelectronics } from "react-icons/si";
 import { useNavigate } from 'react-router-dom';
-import ManualEntryDialog from './ManualEntryDialog';
+import ManualEntryDialog from './ItemFeature/ManualEntryDialog';
 
 const BottomNav = () => {
   const [openManualDialog, setOpenManualDialog] = React.useState(false);

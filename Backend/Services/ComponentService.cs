@@ -35,6 +35,7 @@ public class ComponentService : IComponentService
         {
             Id = id,
             Name = componentDto.Name,
+            Description = componentDto.Description,
             ComponentItems = new List<ComponentItem>()
         };
 

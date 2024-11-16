@@ -11,8 +11,8 @@ import {
   Grid,
 } from '@mui/material';
 import { Save, Cancel, Delete, Edit, Link as LinkIcon } from '@mui/icons-material';
-import { addToCart } from '../services/ShoppingCartService';
-import { deleteItem } from '../services/ItemService';
+import { addToCart } from '../../services/ShoppingCartService';
+import { deleteItem } from '../../services/ItemService';
 
 const ItemCard = ({ item, onSave }) => {
   const [isExpanded, setIsExpanded] = useState(false);

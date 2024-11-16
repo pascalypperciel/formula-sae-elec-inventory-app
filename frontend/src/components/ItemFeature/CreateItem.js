@@ -9,8 +9,8 @@ import {
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { createItem } from '../services/ItemService';
-import { CreateItemDTO } from '../DTOs/CreateItemDTO';
+import { createItem } from '../../services/ItemService';
+import { CreateItemDTO } from '../../DTOs/CreateItemDTO';
 
 const CreateItem = () => {
   const [newItem, setNewItem] = useState({

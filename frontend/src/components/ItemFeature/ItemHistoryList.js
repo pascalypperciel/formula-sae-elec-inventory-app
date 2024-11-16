@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getItemHistory } from '../services/ItemService';
+import { getItemHistory } from '../../services/ItemService';
 import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
 
 const ItemHistoryList = () => {
