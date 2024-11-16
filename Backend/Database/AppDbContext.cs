@@ -9,6 +9,8 @@ public class AppDbContext : DbContext
     public DbSet<ItemHistory> ItemHistories { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<Component> Components { get; set; }
+    public DbSet<ComponentItem> ComponentItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
