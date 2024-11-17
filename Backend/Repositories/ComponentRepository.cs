@@ -24,6 +24,7 @@ public class ComponentRepository : IComponentRepository
         return await _context.Components
             .Include(c => c.ComponentItems)
             .ThenInclude(ci => ci.Item)
+            .ThenInclude(i => i.Vendor)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 

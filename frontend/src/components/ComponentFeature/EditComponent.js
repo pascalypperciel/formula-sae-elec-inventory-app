@@ -158,10 +158,18 @@ const EditComponent = () => {
         <Button variant="outlined" onClick={handleAddItem} sx={{ mb: 3 }}>
           Add Item
         </Button>
-        <br />
-        <Button variant="contained" type="submit">
-          Update Component
-        </Button>
+        <Box display="flex" justifyContent="flex-end" gap={2}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => navigate("/components")}
+          >
+            Cancel
+          </Button>
+          <Button variant="contained" type="submit">
+            Update Component
+          </Button>
+        </Box>
       </form>
     </Box>
   );

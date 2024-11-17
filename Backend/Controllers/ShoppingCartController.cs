@@ -149,6 +149,7 @@ namespace backend.Controllers
                 if (existingCartItem != null)
                 {
                     existingCartItem.Quantity += dto.Quantity;
+                    existingCartItem.ShoppingCartReasons = (ShoppingCartReasons)dto.Reason;
                 }
                 else
                 {
@@ -157,7 +158,7 @@ namespace backend.Controllers
                         ItemId = dto.ItemId,
                         VendorId = dto.VendorId,
                         Quantity = dto.Quantity,
-                        ShoppingCartReasons = ShoppingCartReasons.ManuallyAdded,
+                        ShoppingCartReasons = (ShoppingCartReasons)dto.Reason,
                         Timestamp = DateTime.UtcNow
                     };
 

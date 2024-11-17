@@ -23,6 +23,17 @@ public class ComponentController : ControllerBase
         return Ok(components);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetComponentById(int id)
+    {
+        var component = await _componentService.GetComponentByIdAsync(id);
+        if (component == null)
+        {
+            return NotFound($"Component with ID {id} not found.");
+        }
+        return Ok(component);
+    }
+
     // POST
     [HttpPost]
     public async Task<IActionResult> CreateComponent([FromBody] ComponentDTO componentDto)

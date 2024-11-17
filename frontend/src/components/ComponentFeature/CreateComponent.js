@@ -135,9 +135,18 @@ const CreateComponent = () => {
           Add Item
         </Button>
         <br />
+        <Box display="flex" justifyContent="flex-end" gap={2}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => navigate("/components")}
+          >
+            Cancel
+          </Button>
         <Button variant="contained" type="submit">
           Create Component
         </Button>
+        </Box>
       </form>
     </Box>
   );

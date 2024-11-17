@@ -13,6 +13,17 @@ export const getComponents = async () => {
   }
 };
 
+// Fetch a specific component by ID
+export const getComponentById = async (id) => {
+    try {
+      const response = await axios.get(`${API_URL}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch component with ID ${id}:`, error);
+      throw error;
+    }
+  };
+
 // Create a new component
 export const createComponent = async (component) => {
   try {

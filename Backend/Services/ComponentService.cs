@@ -3,6 +3,7 @@ using backend.DTOs;
 using backend.Models;
 using backend.Repositories;
 using backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 public class ComponentService : IComponentService
 {
@@ -21,6 +22,28 @@ public class ComponentService : IComponentService
     {
         var components = await _componentRepository.GetComponentsAsync();
         return _mapper.Map<List<ComponentDTO>>(components);
+    }
+
+    public async Task<ComponentDTO?> GetComponentByIdAsync(int id)
+    {
+        var component = await _componentRepository.GetComponentByIdAsync(id);
+        if (component == null) return null;
+
+        return new ComponentDTO
+        {
+            Id = component.Id,
+            Name = component.Name,
+            Description = component.Description,
+            ComponentItems = component.ComponentItems.Select(ci => new ComponentItemDTO
+            {
+                ItemId = ci.ItemId,
+                Identifier = ci.Item.Identifier,
+                QuantityRequired = ci.QuantityRequired,
+                AvailableQuantity = ci.Item.Quantity,
+                VendorId = ci.Item.VendorId,
+                ImageUrl = ci.Item.ImageUrl
+            }).ToList()
+        };
     }
 
     public async Task AddComponentAsync(ComponentDTO componentDto)

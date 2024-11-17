@@ -32,7 +32,7 @@ const ItemCard = ({ item, onSave }) => {
   const handleAddToCart = async () => {
     const vendorId = item.vendor?.id || '';
     if (vendorId && item.id) {
-      await addToCart(item.id, vendorId, quantity);
+      await addToCart(item.id, vendorId, quantity, 3);
     }
   };
 

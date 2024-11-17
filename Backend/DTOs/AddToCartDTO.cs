@@ -5,5 +5,6 @@
         public int ItemId { get; set; }
         public int VendorId { get; set; }
         public int Quantity { get; set; }
+        public int Reason { get; set; }
     }
 }
